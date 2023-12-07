@@ -43,6 +43,13 @@ io.on("connection", (socket) => {
         console.log(`user with ID: ${socket.id} joined room ${data}`)
         io.to(socket.id).emit('roomName', data)
     })
+
+
+    socket.on('send_message',(data)=>{
+socket.to(data.room).emit("receive_message",data)
+    })
+
+    
 })
 
 server.listen(5001, () => {
