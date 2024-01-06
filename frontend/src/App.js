@@ -1,24 +1,18 @@
 import { Box, Grid, Stack } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TopOptions from "./components/TopOptions";
 import SideBar from "./components/SideBar";
 import ChatArea from "./components/ChatArea";
+import Login from "./components/Auth/Login";
+import { useAppContext } from "./Context/ChatContext";
 
 function App() {
+  const [isLogged, setISLogged] = useState(false);
+  const x = useAppContext();
   return (
-    <Box style={{top : 0}} >
-      <Stack direction={"row"}>
-        {/* ///////////// contacts and chats //////////////// */}
-        <Grid container spacing={0}>
-        <Grid item xs={4}>
-            <SideBar />
-          </Grid>
-          {/* ////////////////// chat box ///////////////// */}
-          <Grid item xs={8}>
-            <ChatArea />
-          </Grid>
-        </Grid>
-      </Stack>
+    <Box style={{ top: 0 }}>
+      {!x?.state.user.isLogged && <Login />}
+      {x?.state.user.isLogged && <ChatArea />}
     </Box>
   );
 }

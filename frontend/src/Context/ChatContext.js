@@ -9,6 +9,8 @@ const reducer = (state, action) => {
   switch (action.type) {
     case "addRoom":
       return { ...state, user: action.payload  };
+      case "addUser":
+        return { ...state, user: action.payload  };
     case "removeRoom":
       return { ...state, user: '' };
     default:

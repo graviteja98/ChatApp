@@ -19,6 +19,7 @@ import SendIcon from "@mui/icons-material/Send";
 import io from "socket.io-client";
 import { useAppContext } from "../Context/ChatContext";
 import { useContext } from "react";
+import LogoutIcon from "@mui/icons-material/Logout";
 const socket = io.connect("http://localhost:5001");
 function ChatArea() {
   const msgRef = useRef();
@@ -33,10 +34,11 @@ function ChatArea() {
   }, [x]);
   const Send = async () => {
     console.log(msgRef.current.value);
-    console.log('you see this is ',x.state.user.Name)
+    console.log("you see this is ", x.state.user.Name);
+    setName(x.state.user.username);
     const messageData = {
-      room: x.state.user.Name,
-      name,
+      room: x.state.user.room,
+      name: x.state.user.username,
       message: msgRef.current.value,
       time:
         new Date(Date.now()).getHours() +
@@ -46,21 +48,23 @@ function ChatArea() {
     setMsg((prev) => [...prev, messageData]);
     await socket.emit("send_message", messageData);
     msgRef.current.value = "";
+    console.log("message list", msg);
   };
   const joinRoom = () => {
-    socket.emit("join_room", x.state.user.Name);
-    console.log('Joining room',x.state.user.Name)
+    setMsg([]);
+    socket.emit("join_room", x.state.user.room);
+    console.log("Joining room", x.state.user.room);
   };
   const scrollRef = useRef();
   useEffect(() => {
     socket.on("getID", (data) => {
       console.log("your ID is ", data);
-      setName(data);
+      // setName(data);
     });
     socket.on("roomName", (data) => {
       console.log(data);
     });
-    socket.on("receive_message", (data) => {
+    socket.on("receive_messages", (data) => {
       setMsg((prev) => [...prev, data]);
     });
   }, [socket]);
@@ -89,19 +93,19 @@ function ChatArea() {
           <Toolbar sx={{ backgroundColor: " #CCCCFF" }}>
             {/* Avatar on the leftmost side */}
             <Avatar
-              alt={x.state.user.Name}
+              alt={x.state.user.room}
               src={x.state.user.Avatar} // Replace with your avatar image URL
               sx={{ marginRight: 2 }}
             />
             <Typography variant="h4" fontWeight={600} color="black">
-              {x.state.user.Name}
+              {x.state.user.room}
             </Typography>
             {/* Spacer to push options button to the rightmost side */}
             <div style={{ flexGrow: 1 }}></div>
 
             {/* Options button on the rightmost side */}
-            <IconButton color="inherit">
-              <MoreVertIcon />
+            <IconButton color="red">
+              <LogoutIcon color="red" />
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -142,21 +146,36 @@ function ChatArea() {
                     m.name == name ? "primary.main" : "success.main",
                   my: 1,
                   borderRadius: 2,
-                  p: 2,
+                  p: 1,
                   ml: m.name == name ? 60 : 0,
                   mr: m.name !== name ? 60 : 0,
                   color: "white",
                 }}
               >
-                <Typography variant="body1">{m.message}</Typography>
-                <Typography color="black" variant="subtitle2" fontWeight={600}>
+                <Typography
+                  variant="subtitle2"
+                  align="center"
+                  color="blue"
+                  sx={{ borderRadius: 5, my: 1, backgroundColor: "whitesmoke" }}
+                >
+                  {m.name}
+                </Typography>
+                <Typography variant="body1" sx={{ px: 2 }}>
+                  {m.message}
+                </Typography>
+                <Typography
+                  color="black"
+                  sx={{ px: 2 }}
+                  variant="subtitle2"
+                  fontWeight={600}
+                >
                   {m.time}
                 </Typography>
               </Box>
             ))
           )}
         </Container>
-        <Stack direction={"row"} spacing={1} sx={{ p :1 }}>
+        <Stack direction={"row"} spacing={1} sx={{ p: 1 }}>
           {" "}
           <Button>
             <TagFacesIcon />
@@ -166,8 +185,8 @@ function ChatArea() {
             inputRef={msgRef}
             sx={{ backgroundColor: "white", my: 2 }}
           />
-          <Button variant="contained" size='small' ref={btnRef} onClick={Send}>
-            <SendIcon/>
+          <Button variant="contained" size="small" ref={btnRef} onClick={Send}>
+            <SendIcon />
           </Button>
         </Stack>
       </Paper>

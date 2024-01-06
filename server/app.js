@@ -44,10 +44,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("send_message", (data) => {
-    socket.to(data.room).emit("receive_message", data);
+    socket.to(data.room).emit("receive_messages", data);
     console.log(`sending to ${JSON.stringify(data)}`,data.room)
   });
 });
+
+app.post('/login', (req,res)=>{
+  
+})
 
 server.listen(5001, () => {
   console.log("started at 5001");
