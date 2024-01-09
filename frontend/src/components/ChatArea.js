@@ -20,7 +20,7 @@ import io from "socket.io-client";
 import { useAppContext } from "../Context/ChatContext";
 import { useContext } from "react";
 import LogoutIcon from "@mui/icons-material/Logout";
-const socket = io.connect("http://localhost:5001");
+const socket = io.connect("http://localhost:5055");
 function ChatArea() {
   const msgRef = useRef();
   const roomRef = useRef();

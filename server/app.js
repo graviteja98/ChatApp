@@ -8,7 +8,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000"],
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
@@ -45,14 +45,14 @@ io.on("connection", (socket) => {
 
   socket.on("send_message", (data) => {
     socket.to(data.room).emit("receive_messages", data);
-    console.log(`sending to ${JSON.stringify(data)}`,data.room)
+    console.log(`sending to ${JSON.stringify(data)}`, data.room)
   });
 });
 
-app.post('/login', (req,res)=>{
-  
+app.post('/login', (req, res) => {
+
 })
 
-server.listen(5001, () => {
-  console.log("started at 5001");
+server.listen(5055, () => {
+  console.log("started at 5055");
 });

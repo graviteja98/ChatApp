@@ -1,0 +1,25 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend-container
+    ports:
+      - "3055:3000"
+    networks:
+      - common-network
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: backend-container
+    ports:
+      - "5055:5055"
+    networks:
+      - common-network
+
+networks:
+  common-network:
+    driver: bridge
