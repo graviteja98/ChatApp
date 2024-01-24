@@ -17,23 +17,19 @@ COPY . .
 RUN npm run build
 
 # Runtime stage
-FROM node:14
+FROM nginx:latest
 
 # Set the working directory inside the container
-WORKDIR /usr/src/app
+WORKDIR /usr/share/nginx/html
 
 # Copy only the necessary files from the build stage
-COPY --from=builder /usr/src/app/build ./build
-COPY package*.json ./
+COPY --from=builder /usr/src/app/build .
 
-# Install only production dependencies
-RUN npm install --only=production
+# Copy Nginx configuration file to the container
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Install serve globally
-RUN npm install -g serve
+# Expose the specified port (change 80 to your desired port)
+EXPOSE 80
 
-# Expose the specified port (change 3055 to your desired port)
-EXPOSE 3055
-
-# Start the React app using serve with the specified port
-CMD ["serve", "-s", "build", "-p", "3055"]
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]

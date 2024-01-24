@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: frontend-container
     ports:
-      - "3055:3000"
+      - "3055:80"
     networks:
       - common-network
 
